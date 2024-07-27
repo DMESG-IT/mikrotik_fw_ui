@@ -56,6 +56,7 @@ def b64encode_filter(s):
 def index():
     data = load_data()
     return render_template('index.html', countries=data['blocked_countries'], asns=data['blocked_asns'], settings=data['settings'], countries_list=countries_list, whitelist_ips=data['whitelist_ips'], blocked_ips=data['blocked_ips'])
+
 @app.route('/add_country', methods=['POST'])
 def add_country():
     country_code = request.form['country_code']
@@ -67,7 +68,7 @@ def add_country():
             if speed_limit:
                 data['settings'].append({"setting_name": f"speed_limit_{country_code.lower()}", "setting_value": speed_limit})
             save_data(data)
-            subprocess.Popen(['python', 'update_mikrotik.py', '--force_update'])
+            subprocess.run(['python', 'update_mikrotik.py', '--force_update'], check=True)
     return redirect('/')
 
 @app.route('/delete_country/<country_code>', methods=['POST'])
@@ -77,7 +78,7 @@ def delete_country(country_code):
         data['blocked_countries'].remove(country_code.upper())
         data['settings'] = [setting for setting in data['settings'] if setting['setting_name'] != f"speed_limit_{country_code.lower()}"]
         save_data(data)
-        subprocess.Popen(['python', 'update_mikrotik.py', '--remove_country', country_code])
+        subprocess.run(['python', 'update_mikrotik.py', '--remove_country', country_code], check=True)
     return redirect('/')
 
 @app.route('/add_asn', methods=['POST'])
@@ -91,7 +92,7 @@ def add_asn():
             if speed_limit:
                 data['settings'].append({"setting_name": f"speed_limit_asn_{asn}", "setting_value": speed_limit})
             save_data(data)
-            subprocess.Popen(['python', 'update_mikrotik.py', '--force_update'])
+            subprocess.run(['python', 'update_mikrotik.py', '--force_update'], check=True)
     return redirect('/')
 
 @app.route('/delete_asn/<asn>', methods=['POST'])
@@ -101,8 +102,9 @@ def delete_asn(asn):
         data['blocked_asns'].remove(asn.upper())
         data['settings'] = [setting for setting in data['settings'] if setting['setting_name'] != f"speed_limit_asn_{asn}"]
         save_data(data)
-        subprocess.Popen(['python', 'update_mikrotik.py', '--remove_asn', asn])
+        subprocess.run(['python', 'update_mikrotik.py', '--remove_asn', asn], check=True)
     return redirect('/')
+
 @app.route('/add_ip', methods=['POST'])
 def add_ip():
     ip = request.form['ip']
@@ -113,12 +115,12 @@ def add_ip():
             if ip not in data['whitelist_ips']:
                 data['whitelist_ips'].append(ip)
                 save_data(data)
-                subprocess.Popen(['python', 'update_mikrotik.py', '--add_whitelist', ip])
+                subprocess.run(['python', 'update_mikrotik.py', '--add_whitelist', ip], check=True)
         elif list_type == 'blocklist':
             if ip not in data['blocked_ips']:
                 data['blocked_ips'].append(ip)
                 save_data(data)
-                subprocess.Popen(['python', 'update_mikrotik.py', '--add_blocklist', ip])
+                subprocess.run(['python', 'update_mikrotik.py', '--add_blocklist', ip], check=True)
     return redirect('/')
 
 @app.route('/delete_ip/<list_type>/<ip>', methods=['POST'])
@@ -128,11 +130,11 @@ def delete_ip(list_type, ip):
     if list_type == 'whitelist' and decoded_ip in data['whitelist_ips']:
         data['whitelist_ips'].remove(decoded_ip)
         save_data(data)
-        subprocess.Popen(['python', 'update_mikrotik.py', '--remove_whitelist', decoded_ip])
+        subprocess.run(['python', 'update_mikrotik.py', '--remove_whitelist', decoded_ip], check=True)
     elif list_type == 'blocklist' and decoded_ip in data['blocked_ips']:
         data['blocked_ips'].remove(decoded_ip)
         save_data(data)
-        subprocess.Popen(['python', 'update_mikrotik.py', '--remove_blocklist', decoded_ip])
+        subprocess.run(['python', 'update_mikrotik.py', '--remove_blocklist', decoded_ip], check=True)
     return redirect('/')
 
 @app.route('/add_setting', methods=['POST'])
@@ -156,6 +158,7 @@ def update_setting():
             break
     save_data(data)
     return redirect('/')
+
 @app.route('/delete_setting/<setting_name>', methods=['POST'])
 def delete_setting(setting_name):
     data = load_data()
