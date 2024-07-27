@@ -20,6 +20,24 @@ Bu proje, DMESG Internet Danışmanlık tarafından kullanılan bir yönetim pan
 
 - **Ayarlar:**
   - Farklı ayarları ekleyebilir, güncelleyebilir ve silebilirsiniz.
+ 
+  
+## Docker ile çalıştırmak
+
+docker-compose up --build
+
+Proje dizin yapısı
+.
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── app.py
+├── update_mikrotik.py
+├── templates
+│   └── index.html
+└── .env
+
+
 
 ## Kurulum
 
@@ -74,10 +92,6 @@ Bu proje, DMESG Internet Danışmanlık tarafından kullanılan bir yönetim pan
 2. Beyaz liste veya kara listeyi seçin.
 3. "IP Ekle" butonuna tıklayın.
 
-### Ayar Ekleme
-
-1. Ana sayfada "Ayarlar" bölümünde ayar ismini ve değerini girin.
-2. "Ayar Ekle" butonuna tıklayın.
 
 ## Geliştirme
 
