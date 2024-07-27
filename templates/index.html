@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #495057;
+        }
+        .card {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        .btn-danger {
+            border-radius: 10px;
+            padding: 5px 10px;
+        }
+        footer {
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+        }
+        .list-group-item:last-child {
+            margin-bottom: 0;
+        }
+        .badge {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+        .form-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .form-inline .form-control,
+        .form-inline .form-select,
+        .form-inline .btn-custom {
+            flex: 1;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        @media (max-width: 576px) {
+            .form-inline {
+                flex-direction: column;
+            }
+            .form-inline .form-control,
+            .form-inline .form-select,
+            .form-inline .btn-custom {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='dmesg_logo_siyah.png') }}" alt="DMESG Logo" width="200">
+        </div>
+        <h1 class="mb-4 text-center">Admin Panel</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Engellenen Ülkeler</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/add_country" class="form-inline mb-3">
+                    <select name="country_code" class="form-select me-2">
+                        {% for country in countries_list %}
+                            <option value="{{ country.code }}">{{ country.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="speed_limit" class="form-control me-2" placeholder="Hız Limiti (ör. 1M/1M)">
+                    <button type="submit" class="btn btn-custom">Ülke Ekle</button>
+                </form>
+                <ul class="list-group mb-4">
+                    {% for country in countries %}
+                        <li class="list-group-item">
+                            <div>{{ country }}</div>
+                            <div>
+                                <form method="POST" action="/delete_country/{{ country }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                </form>
+                                {% for setting in settings %}
+                                    {% if setting.setting_name == "speed_limit_" + country.lower() %}
+                                        <span class="badge bg-info ms-2">Hız Limiti: {{ setting.setting_value }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Engellenen ASN'ler</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/add_asn" class="form-inline mb-3">
+                    <input type="text" name="asn" class="form-control me-2" placeholder="ASN (ör. 12345)">
+                    <input type="text" name="speed_limit" class="form-control me-2" placeholder="Hız Limiti (ör. 1M/1M)">
+                    <button type="submit" class="btn btn-custom">ASN Ekle</button>
+                </form>
+                <ul class="list-group">
+                    {% for asn in asns %}
+                        <li class="list-group-item">
+                            <div>{{ asn }}</div>
+                            <div>
+                                <form method="POST" action="/delete_asn/{{ asn }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                </form>
+                                {% for setting in settings %}
+                                    {% if setting.setting_name == "speed_limit_asn_" + asn %}
+                                        <span class="badge bg-info ms-2">Hız Limiti: {{ setting.setting_value }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>IP Adres Listeleri</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/add_ip" class="form-inline mb-3">
+                    <input type="text" name="ip" class="form-control me-2" placeholder="IP Adresi (ör. 192.168.1.1)">
+                    <select name="list_type" class="form-select me-2">
+                        <option value="whitelist">Beyaz Liste</option>
+                        <option value="blocklist">Kara Liste</option>
+                    </select>
+                    <button type="submit" class="btn btn-custom">IP Ekle</button>
+                </form>
+                <h4>Beyaz Liste</h4>
+                <ul class="list-group mb-4">
+                    {% for ip in whitelist_ips %}
+                        <li class="list-group-item">
+                            <div>{{ ip }}</div>
+                            <form method="POST" action="/delete_ip/whitelist/{{ ip | b64encode }}" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <h4>Kara Liste</h4>
+                <ul class="list-group">
+                    {% for ip in blocked_ips %}
+                        <li class="list-group-item">
+                            <div>{{ ip }}</div>
+                            <form method="POST" action="/delete_ip/blocklist/{{ ip | b64encode }}" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>Ayarlar</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/add_setting" class="form-inline mb-3">
+                    <input type="text" name="setting_name" class="form-control me-2" placeholder="Ayar İsmi">
+                    <input type="text" name="setting_value" class="form-control me-2" placeholder="Ayar Değeri">
+                    <button type="submit" class="btn btn-custom">Ayar Ekle</button>
+                </form>
+                <ul class="list-group">
+                    {% for setting in settings %}
+                        <li class="list-group-item">
+                            <div>{{ setting.setting_name }}: {{ setting.setting_value }}</div>
+                            <div>
+                                <form method="POST" action="/delete_setting/{{ setting.setting_name }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <footer class="text-center mt-4">
+            <p>&copy; 2024 DMESG Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
