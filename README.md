@@ -1,7 +1,7 @@
 
 # DMESG Admin Panel
 
-Bu proje, DMESG Internet Danışmanlık tarafından kullanılan bir yönetim paneli uygulamasıdır. Flask ve Mikrotik RouterOS API kullanılarak geliştirilmiştir. Proje, sunucu güvenliği ve yönetimi için engellenen ülkeler, ASN'ler ve IP adresleri üzerinde işlemler yapmanıza olanak tanır. 
+Bu proje, www.dmesg.com.tr tarafından kullanılan bir yönetim paneli uygulamasıdır. Flask ve Mikrotik RouterOS API kullanılarak geliştirilmiştir. Proje, sunucu güvenliği ve yönetimi için engellenen ülkeler, ASN'ler ve IP adresleri üzerinde işlemler yapmanıza olanak tanır. 
 
 ## Özellikler
 
