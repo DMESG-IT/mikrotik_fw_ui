@@ -18,9 +18,7 @@ Bu proje, www.dmesg.com.tr tarafından kullanılan bir yönetim paneli uygulamas
   - Beyaz listedeki IP adresleri için Mikrotik RouterOS üzerinde kabul kuralları oluşturabilirsiniz.
   - Kara listedeki IP adresleri için Mikrotik RouterOS üzerinde bloklama kuralları oluşturabilirsiniz.
 
-- **Ayarlar:**
-  - Farklı ayarları ekleyebilir, güncelleyebilir ve silebilirsiniz.
- 
+
   
 ## Docker ile çalıştırmak
    ```plaintext
