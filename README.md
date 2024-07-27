@@ -23,10 +23,12 @@ Bu proje, DMESG Internet Danışmanlık tarafından kullanılan bir yönetim pan
  
   
 ## Docker ile çalıştırmak
-
+   ```plaintext
 docker-compose up --build
-
+ ```
 Proje dizin yapısı
+
+   ```plaintext
 .
 ├── Dockerfile
 ├── docker-compose.yml
@@ -36,7 +38,7 @@ Proje dizin yapısı
 ├── templates
 │   └── index.html
 └── .env
-
+ ```
 
 
 ## Kurulum
